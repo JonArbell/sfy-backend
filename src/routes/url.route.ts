@@ -1,28 +1,23 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { validateBody } from "../middlewares/body-validator";
 import { shortenUrlValidator } from "../dtos/request/shorten-url-request.dto";
 import urlController from "../controllers/url-controller";
 import { authenticateJWT } from "../middlewares/token-middleware";
 
-const router = Router();
+const router: Router = express.Router();
 
-const authenticated = Router();
+const authenticated: Router = express.Router();
 
-authenticated.post('/',
-    authenticateJWT, 
-    validateBody(shortenUrlValidator), 
-    urlController.shortenUrl
+authenticated.post(
+  "/",
+  authenticateJWT,
+  validateBody(shortenUrlValidator),
+  urlController.shortenUrl,
 );
 
-authenticated.get('/',
-    authenticateJWT,
-    urlController.getAllUrls
-);
+authenticated.get("/", authenticateJWT, urlController.getAllUrls);
 
-authenticated.delete('/:id',
-    authenticateJWT,
-    urlController.deleteUrlById
-);
+authenticated.delete("/:id", authenticateJWT, urlController.deleteUrlById);
 
 // authenticated.put('/:id',
 //     authenticateJWT,
@@ -34,7 +29,7 @@ authenticated.delete('/:id',
 //     urlController.deleteUrlById
 // );
 
-router.get('/short/:shortUrl', urlController.getUrlByShort);
+router.get("/short/:shortUrl", urlController.getUrlByShort);
 
 router.use(authenticated);
 

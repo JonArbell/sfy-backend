@@ -1,12 +1,9 @@
 import visitorController from "../controllers/visitor-controller";
-import { Router } from "express";
+import express, { Router } from "express";
 import { authenticateJWT } from "../middlewares/token-middleware";
 
-const router = Router();
+const router: Router = express.Router();
 
-router.get('/',
-    authenticateJWT, 
-    visitorController.getAllVisitors
-);
+router.get("/", authenticateJWT, visitorController.getAllVisitors);
 
 export default router;

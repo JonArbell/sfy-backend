@@ -1,39 +1,42 @@
 {
-	"dependencies": {
-		"@prisma/adapter-pg": "^7.2.0",
-		"@prisma/client": "^7.2.0",
-		"bcrypt": "^6.0.0",
-		"bcryptjs": "^3.0.3",
-		"cors": "^2.8.5",
-		"dotenv": "^17.2.3",
-		"express": "^5.2.1",
-		"express-useragent": "^2.0.2",
-		"geoip-lite": "^1.4.10",
-		"install": "^0.13.0",
-		"jsonwebtoken": "^9.0.3",
-		"node-cron": "^4.2.1",
-		"npm": "^11.7.0",
-		"pg": "^8.16.3",
-		"prisma": "^7.2.0",
-		"zod": "^4.3.5"
-	},
-	"scripts": {
-		"dev": "pnpm exec tsx watch src/server.ts",
-		"build": "tsc",
-		"start": "node dist/server.js"
-	},
-	"devDependencies": {
-		"@types/bcrypt": "^6.0.0",
-		"@types/bcryptjs": "^3.0.0",
-		"@types/cors": "^2.8.19",
-		"@types/express": "^5.0.6",
-		"@types/geoip-lite": "^1.4.4",
-		"@types/jsonwebtoken": "^9.0.10",
-		"@types/node": "^25.0.7",
-		"@types/pg": "^8.16.0",
-		"ts-node-dev": "^2.0.0",
-		"tsx": "^4.21.0",
-		"typescript": "^5.9.3"
-	},
-	"type": "module"
+  "dependencies": {
+    "@prisma/client": "^7.2.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-useragent": "^2.0.2",
+    "geoip-lite": "^1.4.10",
+    "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.2.1",
+    "npm": "^11.7.0",
+    "pg": "^8.16.3",
+    "zod": "^4.3.5"
+  },
+  "scripts": {
+    "build": "tsup src/server.ts --format esm --dts",
+    "start": "node dist/src/app.js",
+    "dev": "pnpm exec tsx watch src/server.ts"
+  },
+  "devDependencies": {
+    "@prisma/adapter-pg": "^7.2.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/geoip-lite": "^1.4.4",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.7",
+    "@types/pg": "^8.16.0",
+    "install": "^0.13.0",
+    "nodemon": "^3.1.11",
+    "prisma": "^7.2.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "type": "module"
 }
