@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "tsup src/server.ts --format esm --dts",
-    "start": "node dist/src/app.js",
+    "start": "node dist/server.js",
     "dev": "pnpm exec tsx watch src/server.ts"
   },
   "devDependencies": {
