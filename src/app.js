@@ -1,0 +1,11 @@
+import express from 'express';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client';
+import 'dotenv/config';
+const connectionString = `${process.env.DATABASE_URL}`;
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
+const app = express();
+app.use(express.json());
+// app.set('trust proxy', true);
+export { prisma, app };
