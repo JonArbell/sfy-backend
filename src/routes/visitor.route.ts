@@ -6,4 +6,10 @@ const router: Router = express.Router();
 
 router.get("/", authenticateJWT, visitorController.getAllVisitors);
 
+router.get(
+  "/visitors/unique/count",
+  authenticateJWT,
+  visitorController.getAllVisitors,
+);
+
 export default router;

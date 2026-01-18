@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsup src/server.ts --format esm --dts",
     "start": "node dist/server.js",
-    "dev": "pnpm exec tsx watch src/server.ts"
+    "dev": "pnpm exec tsx watch --clear-screen src/server.ts"
   },
   "devDependencies": {
     "@prisma/adapter-pg": "^7.2.0",

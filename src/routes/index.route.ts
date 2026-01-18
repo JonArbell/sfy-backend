@@ -4,6 +4,7 @@ import authRoutes from "./auth.route";
 import myAccountRoutes from "./my-account.route";
 import userRepository from "../repositories/user-repository";
 import visitorRoutes from "./visitor.route";
+import dashboardRoutes from "./dashboard.route";
 
 const api: Router = express.Router();
 
@@ -15,7 +16,10 @@ router.use(authRoutes);
 router.use(myAccountRoutes);
 
 router.use("/urls", urlRoutes);
+
 router.use("/visitors", visitorRoutes);
+
+router.use("/dashboard", dashboardRoutes);
 
 router.delete("/delete", async (req, res, next) => {
   userRepository.deleteAll();

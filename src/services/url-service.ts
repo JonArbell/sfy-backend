@@ -9,6 +9,7 @@ import { PageRequest } from "../shared/types/pagination.type";
 import { ViewOriginalUrlRequestDTO } from "../dtos/request/view-original-url-request.dto";
 import visitorRepository from "../repositories/visitor-repository";
 import visitRepository from "../repositories/visit-repository";
+import { ur } from "zod/v4/locales";
 
 const shortenUrlByUserId = async (
   data: ShortenUrlRequestDTO,
@@ -86,7 +87,7 @@ const findAllIncludeUrlAccessByUserId = async (
 ) => {
   const count = await urlRepository.totalCountByUserId(userId);
 
-  const data = await urlRepository.findAllIncludeUrlAccessByUserId(
+  const data = await urlRepository.findAllIncludeUrlAccessByUserIdWithPaginate(
     userId,
     pageable,
   );
@@ -100,6 +101,31 @@ const findAllIncludeUrlAccessByUserId = async (
   };
 };
 
+const findByIdAndUserId = async (id: string, userId: string) => {
+  return await urlRepository.findByIdAndUserId(id, userId);
+};
+
+const totalCount = async (userId: string) => {
+  return await urlRepository.totalCountByUserId(userId);
+};
+
+const findMostVisited = async (userId: string) => {
+  const findAllUrls = await urlRepository.findAllUrlIdsByUserId(userId);
+
+  const urlIds = findAllUrls.map((url) => url.id);
+
+  const visits = await visitRepository.findCountsAndModelsByUrlIdsGroupByModel(
+    urlIds,
+    "urlId",
+  );
+
+  const urlId = visits[0].urlId;
+
+  const findUrlById = await urlRepository.findById(urlId);
+
+  return mapToUrlResponseDTO(findUrlById).short;
+};
+
 const deleteUrlByIdAndUserId = async (id: string, userId: string) => {
   const findUrl = await urlRepository.findByIdAndUserId(id, userId);
 
@@ -109,7 +135,27 @@ const deleteUrlByIdAndUserId = async (id: string, userId: string) => {
   return await urlRepository.deleteUrlByIdAndUserId(findUrl.id, userId);
 };
 
+const find5RecentUrlsByUserId = async (userId: string) => {
+  const recentUrls = await urlRepository.recent5UrlsByUserId(userId);
+
+  const urlResponses = await Promise.all(
+    recentUrls.map(async (url) => {
+      const [totalVisit, totalVisitor] = await Promise.all([
+        visitRepository.findAllVisitsByUrlId(url.id),
+        visitRepository.findAllVisitorsByUrlId(url.id),
+      ]);
+      return mapToUrlResponseDTO(url, totalVisit.length, totalVisitor.length);
+    }),
+  );
+
+  return urlResponses;
+};
+
 export default {
+  find5RecentUrlsByUserId,
+  totalCount,
+  findMostVisited,
+  findByIdAndUserId,
   deleteUrlByIdAndUserId,
   findAllIncludeUrlAccessByUserId,
   shortenUrlByUserId,

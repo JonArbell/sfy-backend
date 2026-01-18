@@ -5,81 +5,92 @@ import urlService from "../services/url-service";
 import { buildPageable } from "../shared/utils/pagination.util";
 import { trackVisitor } from "../shared/utils/track-visitor.util";
 
-const shortenUrl = async (req : Request, res : Response) => {
+const shortenUrl = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
 
-    const authRequest = asAuthRequest(req);
+  const body = req.body as ShortenUrlRequestDTO;
 
-    const body = req.body as ShortenUrlRequestDTO;
+  const response = await urlService.shortenUrlByUserId(
+    body,
+    authRequest.user.id,
+  );
 
-    const response = await urlService.shortenUrlByUserId(body, authRequest.user.id);
+  res.status(201).json({
+    message: "success",
+    data: response,
+  });
+};
 
-    res.status(201).json({
-        message : 'success',
-        data : response
-    });
+const getAllUrls = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
 
-}
+  const pageable = buildPageable(req.query);
 
-const getAllUrls = async (req : Request, res : Response) => {
+  const response = await urlService.findAllIncludeUrlAccessByUserId(
+    authRequest.user.id,
+    pageable,
+  );
 
-    const authRequest = asAuthRequest(req);
+  res.status(200).json({
+    message: "success",
+    data: response.data,
+    meta: {
+      totalPages: response.totalPages,
+      totalElements: response.totalElements,
+      size: pageable.size,
+      currentPage: pageable.currentPage,
+    },
+  });
+};
 
-    const pageable = buildPageable(req.query);
+const getUrlById = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
 
-    const response = await urlService.findAllIncludeUrlAccessByUserId(
-        authRequest.user.id,
-        pageable
-    );
+  const id = req.params.id as string;
 
-    res.status(200).json({
-        message : 'success',
-        data : response.data,
-        meta : {
-            totalPages : response.totalPages,
-            totalElements : response.totalElements,
-            size : pageable.size,
-            currentPage : pageable.currentPage
-        }
-    });
+  const response = await urlService.findByIdAndUserId(id, authRequest.user.id);
 
-}
+  res.status(200).json({
+    message: "success",
+    data: response,
+  });
+};
 
-const deleteUrlById = async (req : Request, res : Response)=> {
+const deleteUrlById = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
 
-    const id = req.params.id as string;
+  const authRequest = asAuthRequest(req);
 
-    const authRequest = asAuthRequest(req);
+  const response = await urlService.deleteUrlByIdAndUserId(
+    id,
+    authRequest.user.id,
+  );
 
-    const response = await urlService.deleteUrlByIdAndUserId(
-        id,
-        authRequest.user.id
-    );
+  console.log(response);
 
-    console.log(response);
+  res.status(200).json({
+    data: response,
+    message: "success",
+  });
+};
 
-    res.status(200).json(
-        {
-            data : response,
-            message : 'success'
-        }
-    )
+const getUrlByShort = async (req: Request, res: Response) => {
+  const shortUrl = req.params.shortUrl as string;
 
-}
+  const visitorRequest = trackVisitor(req);
 
-const getUrlByShort = async (req : Request, res : Response) => {
+  const response = await urlService.viewOriginalByShort(
+    shortUrl,
+    visitorRequest,
+  );
 
-    const shortUrl = req.params.shortUrl as string;
-
-    const visitorRequest = trackVisitor(req);
-
-    const response = await urlService.viewOriginalByShort(shortUrl, visitorRequest);
-
-    res.redirect(response);
-}
+  res.redirect(response);
+};
 
 export default {
-    getUrlByShort,
-    getAllUrls,
-    shortenUrl,
-    deleteUrlById
-}
+  getUrlById,
+  getUrlByShort,
+  getAllUrls,
+  shortenUrl,
+  deleteUrlById,
+};

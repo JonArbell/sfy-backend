@@ -8,26 +8,19 @@ const router: Router = express.Router();
 
 const authenticated: Router = express.Router();
 
+authenticated.use(authenticateJWT);
+
+authenticated.get("/", urlController.getAllUrls);
+
 authenticated.post(
   "/",
-  authenticateJWT,
   validateBody(shortenUrlValidator),
   urlController.shortenUrl,
 );
 
-authenticated.get("/", authenticateJWT, urlController.getAllUrls);
+authenticated.get("/:id", urlController.getUrlById);
 
-authenticated.delete("/:id", authenticateJWT, urlController.deleteUrlById);
-
-// authenticated.put('/:id',
-//     authenticateJWT,
-//     urlController.deleteUrlById
-// );
-
-// authenticated.get('/:id',
-//     authenticateJWT,
-//     urlController.deleteUrlById
-// );
+authenticated.delete("/:id", urlController.deleteUrlById);
 
 router.get("/short/:shortUrl", urlController.getUrlByShort);
 
