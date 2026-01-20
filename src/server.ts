@@ -27,4 +27,10 @@ app.use(routes);
 
 app.use(errorHandler);
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Panis",
+  });
+});
+
 app.listen(PORT, () => console.log(`Running on PORT : ${PORT}`));
