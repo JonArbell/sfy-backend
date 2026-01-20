@@ -5,6 +5,7 @@ import userService from "../services/user-service";
 import { UpdateUserRequestDTO } from "../dtos/request/user-request.dto";
 import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
 import userProfileService from "../services/user-profile-service";
+import { MulterFile } from "../shared/types/multerfile.type";
 
 const getMyAccount = async (req: Request, res: Response) => {
   const authRequest = asAuthRequest(req);
@@ -36,11 +37,17 @@ const updateCredentials = async (req: Request, res: Response) => {
 const updateUserProfile = async (req: Request, res: Response) => {
   const authRequest = asAuthRequest(req);
 
-  const form = req.body as UserProfileRequestDTO;
+  const form: UserProfileRequestDTO = {
+    fullName: req.body.fullName,
+    email: req.body.email,
+  };
+
+  const icon = req.file;
 
   const response = await userProfileService.updateUserProfile(
     authRequest.user.id,
     form,
+    icon,
   );
 
   res.status(200).json({

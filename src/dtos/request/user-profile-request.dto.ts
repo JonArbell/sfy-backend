@@ -12,8 +12,6 @@ export const userProfileValidator = z.object({
     ),
 
   email: z.email({ message: "Invalid email address" }),
-
-  icon: z.string().optional(),
 });
 
 export type UserProfileRequestDTO = z.infer<typeof userProfileValidator>;
