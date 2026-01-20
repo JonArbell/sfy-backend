@@ -23,7 +23,7 @@ export const trackVisitor = (req: any): ViewOriginalUrlRequestDTO => {
     [geo?.city, geo?.country].filter(Boolean).join(", ") || "unknown";
 
   return {
-    ipAddress: "lopit angas",
+    ipAddress: ipAddress,
     deviceType,
     location,
   };

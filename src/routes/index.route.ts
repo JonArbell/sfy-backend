@@ -13,7 +13,7 @@ const router: Router = express.Router();
 api.use("/api", router);
 
 router.use(authRoutes);
-router.use(myAccountRoutes);
+router.use("/me", myAccountRoutes);
 
 router.use("/urls", urlRoutes);
 

@@ -1,102 +1,109 @@
-import {generateToken, validateToken} from  '../services/jwt-service'
-import cryptoUtil from '../shared/utils/crypto.util'
-import userRepository from '../repositories/user-repository'
-import { HttpError } from '../exceptions/httpError';
-import { RegisterRequestDTO } from '../dtos/request/register-request.dto';
-import userProfileRepository from '../repositories/user-profile-repository';
-import { UserProfileResponseDTO } from '../dtos/response/user-profile-response.dto';
-import { TokenPayload } from '../shared/types/token-payload';
+import { generateToken, validateToken } from "../services/jwt-service";
+import cryptoUtil from "../shared/utils/crypto.util";
+import userRepository from "../repositories/user-repository";
+import { HttpError } from "../exceptions/httpError";
+import { RegisterRequestDTO } from "../dtos/request/register-request.dto";
+import userProfileRepository from "../repositories/user-profile-repository";
+import { MyAccountResponseDTO } from "../dtos/response/my-account-response.dto";
+import { TokenPayload } from "../shared/types/token-payload";
+import { UserRequestDTO } from "../dtos/request/user-request.dto";
+import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
 
-const login = async (username : string, password : string) => {
+const login = async (username: string, password: string) => {
+  const findUser = await userRepository.findByUsername(username);
 
-    const findUser = await  userRepository.findByUsername(username);
+  if (!findUser)
+    throw new HttpError(401, "Invalid credentials.", "UnauthorizedError");
 
-    if(!findUser)
-        throw new HttpError(401,'Invalid credentials.', 'UnauthorizedError');
+  const passwordMatch = await cryptoUtil.decode(password, findUser.password);
 
-    const passwordMatch = await cryptoUtil.decode(password, findUser.password);
+  if (!passwordMatch)
+    throw new HttpError(401, "Invalid credentials.", "UnauthorizedError");
 
-    if(!passwordMatch)
-        throw new HttpError(401,'Invalid credentials.', 'UnauthorizedError');
+  const tokenPayload: TokenPayload = {
+    id: findUser.id,
+    type: "access",
+    username: findUser.username,
+  };
 
-    const tokenPayload : TokenPayload = {
-        id : findUser.id,
-        type : 'access',
-        username : findUser.username
-    };
+  const token = generateToken(tokenPayload, "1h");
 
-    const token = generateToken(tokenPayload, "1h");
+  tokenPayload.type = "refresh";
 
-    tokenPayload.type = 'refresh';
+  const refreshToken = generateToken(tokenPayload, "7d");
 
-    const refreshToken = generateToken(tokenPayload, "7d");
+  return {
+    token: token,
+    refreshToken: refreshToken,
+  };
+};
 
-    return {
-        token : token,
-        refreshToken : refreshToken
-    }
-}
+const generateTokenFromRefreshToken = async (refreshToken: string) => {
+  const refreshTokenPayload = validateToken(refreshToken);
 
-const generateTokenFromRefreshToken = async (refreshToken : string) => {
+  if (refreshTokenPayload.type === "access")
+    throw new HttpError(401, "Invalid token type.", "UnauthorizedError");
 
-    const refreshTokenPayload = validateToken(refreshToken);
+  const tokenPayload: TokenPayload = {
+    id: refreshTokenPayload.id,
+    username: refreshTokenPayload.username,
+    type: "access",
+  };
 
-    if(refreshTokenPayload.type === 'access')
-        throw new HttpError(401, 'Invalid token type.', 'UnauthorizedError');
+  const newToken = generateToken(tokenPayload, "1h");
 
-    const tokenPayload : TokenPayload = {
-        id : refreshTokenPayload.id,
-        username : refreshTokenPayload.username,
-        type : 'access'
-    }
- 
-    const newToken = generateToken(tokenPayload, "1h");
+  return {
+    token: newToken,
+  };
+};
 
-    return {
-        token : newToken
-    }
+const createAccount = async (
+  data: RegisterRequestDTO,
+): Promise<MyAccountResponseDTO> => {
+  const userExistsByUsername = await userRepository.findByUsername(
+    data.username,
+  );
 
-}
+  const userExistsByEmail = await userProfileRepository.findByEmail(data.email);
 
-const createAccount = async (data : RegisterRequestDTO) 
-: Promise<UserProfileResponseDTO> => {
+  if (userExistsByUsername)
+    throw new HttpError(409, "Username already taken.", "ConflictError");
 
-    const userExistsByUsername = await userRepository.findByUsername(data.username);
+  if (userExistsByEmail)
+    throw new HttpError(409, "Email already registered.", "ConflictError");
 
-    const userExistsByEmail = await userProfileRepository.findByEmail(data.email);
+  const hashedPassword = await cryptoUtil.encode(data.password);
 
-    if(userExistsByUsername)
-        throw new HttpError(409, 'Username already taken.', 'ConflictError');
+  const credential: UserRequestDTO = {
+    username: data.username,
+    password: hashedPassword,
+  };
 
-    if(userExistsByEmail)
-        throw new HttpError(409, 'Email already registered.', 'ConflictError');
+  const userProfile: UserProfileRequestDTO = {
+    email: data.email,
+    fullName: data.fullName,
+  };
 
-    const hashedPassword = await cryptoUtil.encode(data.password);
+  const savedUser = await userRepository.create(credential);
 
-    const savedUser = await userRepository.create(
-        data.username,
-        hashedPassword
-    );
+  const savedProfile = await userProfileRepository.create(
+    savedUser.id,
+    userProfile,
+  );
 
-    const savedProfile = await userProfileRepository.create(
-        data.fullName,
-        data.email,
-        data.icon,
-        savedUser.id
-    );
+  return {
+    id: savedProfile.id,
+    username: savedUser.username,
+    fullName: savedProfile.fullName,
+    email: savedProfile.email,
+    icon: savedProfile.icon,
+    createdAt: savedUser.createdAt,
+    updatedAt: savedProfile.updatedAt,
+  };
+};
 
-    return {
-        id : savedProfile.id,
-        fullName : savedProfile.fullName,
-        email : savedProfile.email,
-        icon : savedProfile.icon,
-        updatedAt : savedProfile.updatedAt,
-    };
-
-}
-
-export default{
-    generateTokenFromRefreshToken,
-    createAccount,
-    login
-}
+export default {
+  generateTokenFromRefreshToken,
+  createAccount,
+  login,
+};

@@ -1,26 +1,66 @@
-import { UserResponseDTO } from "../dtos/response/user-response.dto";
+import {
+  UpdateUserRequestDTO,
+  UserRequestDTO,
+} from "../dtos/request/user-request.dto";
 import { HttpError } from "../exceptions/httpError";
-import userRepository from "../repositories/user-repository";
 import userProfileRepository from "../repositories/user-profile-repository";
+import userRepository from "../repositories/user-repository";
+import cryptoUtil from "../shared/utils/crypto.util";
 
-const currentUser = async (userId : string) => {
-    const user = await userRepository.findById(userId);
+const updateUsernameAndPassword = async (
+  id: string,
+  updateCredentials: UpdateUserRequestDTO,
+) => {
+  const findUser = await userRepository.findById(id);
 
-    if(!user)
-        throw new HttpError(404, 'User not found.', 'NotFoundError');
+  if (!findUser)
+    throw new HttpError(
+      404,
+      `Cannot update. This user is not yet registered.`,
+      "UserNotFound",
+    );
 
-    const findProfile = await userProfileRepository.findByUserId(userId);
+  const confirmPasswordMatch =
+    updateCredentials.confirmPassword === updateCredentials.password;
 
-    return {
-        id : user.id,
-        username : user.username,
-        email : findProfile?.email,
-        fullName : findProfile?.fullName,
-        icon : findProfile?.icon
-    };
+  const passwordMatch = await cryptoUtil.decode(
+    updateCredentials.oldPassword,
+    findUser.password,
+  );
 
-}
+  const passwordSame = await cryptoUtil.decode(
+    updateCredentials.password,
+    findUser.password,
+  );
 
-export default {
-currentUser
-}
+  if (!confirmPasswordMatch)
+    throw new HttpError(409, "Confirm password not match.");
+
+  if (!passwordMatch) throw new HttpError(409, "Password not match.");
+
+  if (passwordSame)
+    throw new HttpError(409, "Cant change using same password.");
+
+  const credentials: UserRequestDTO = {
+    password: await cryptoUtil.encode(updateCredentials.password),
+    username: updateCredentials.username,
+  };
+
+  const update = await userRepository.updateCredentials(id, credentials);
+
+  const findProfile = await userProfileRepository.findByUserId(update.id);
+
+  if (!findProfile) throw new HttpError(404, "Profile not found.");
+
+  return {
+    id: update.id,
+    username: update.username,
+    email: findProfile?.email ?? "",
+    fullName: findProfile.fullName,
+    createdAt: update.createdAt,
+    updatedAt: update.updatedAt ?? findProfile.updatedAt,
+    icon: findProfile?.icon,
+  };
+};
+
+export default { updateUsernameAndPassword };

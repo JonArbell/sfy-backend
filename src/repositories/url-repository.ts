@@ -1,5 +1,6 @@
 import { prisma } from "../app";
 import { PageRequest } from "../shared/types/pagination.type";
+import { FindUrlOptions } from "../shared/types/url-options.type";
 
 const findAllByUserId = (userId: string) => {
   return prisma.url.findMany({
@@ -21,14 +22,25 @@ const recent5UrlsByUserId = (userId: string) => {
   });
 };
 
-const findAllUrlIdsByUserId = (userId: string) => {
+const findAllUrlIdsByUserId = (
+  userId: string,
+  options: FindUrlOptions = {},
+) => {
+  const { take, withVisits } = options;
+
   return prisma.url.findMany({
     where: {
-      userId: userId,
+      userId,
+      ...(withVisits && {
+        visits: {
+          some: {},
+        },
+      }),
     },
     select: {
       id: true,
     },
+    ...(take && { take }),
   });
 };
 

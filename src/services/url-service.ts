@@ -9,7 +9,7 @@ import { PageRequest } from "../shared/types/pagination.type";
 import { ViewOriginalUrlRequestDTO } from "../dtos/request/view-original-url-request.dto";
 import visitorRepository from "../repositories/visitor-repository";
 import visitRepository from "../repositories/visit-repository";
-import { ur } from "zod/v4/locales";
+import cryptoUtil from "../shared/utils/crypto.util";
 
 const shortenUrlByUserId = async (
   data: ShortenUrlRequestDTO,
@@ -29,10 +29,12 @@ const shortenUrlByUserId = async (
 
   const url = await urlRepository.create(data.url, shortUrl, userId);
 
+  const password = data.password ? await cryptoUtil.encode(data.password) : "";
+
   const access = await urlAccessRepository.create(
     url.id,
+    password,
     data.expirationDate,
-    data.password,
   );
 
   return {

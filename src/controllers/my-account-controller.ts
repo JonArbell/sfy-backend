@@ -1,16 +1,56 @@
 import { Request, Response } from "express";
-import userService from "../services/user-service";
+import myAccountService from "../services/my-account-service";
 import { asAuthRequest } from "../shared/utils/auth-request.util";
+import userService from "../services/user-service";
+import { UpdateUserRequestDTO } from "../dtos/request/user-request.dto";
+import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
+import userProfileService from "../services/user-profile-service";
 
-export const myAccount = async (req : Request, res : Response) => {
+const getMyAccount = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
 
-    const authRequest = asAuthRequest(req);
+  const myAccount = await myAccountService.findMyAccount(authRequest.user.id);
 
-    const user = await userService.currentUser(authRequest.user.id);
+  return res.status(200).json({
+    data: myAccount,
+    message: "success",
+  });
+};
 
-    return res.status(200).json({
-        data : user,
-        message : 'success'
-    });
-    
-}
+const updateCredentials = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
+
+  const form = req.body as UpdateUserRequestDTO;
+
+  const response = await userService.updateUsernameAndPassword(
+    authRequest.user.id,
+    form,
+  );
+
+  return res.status(200).json({
+    data: response,
+    message: "success",
+  });
+};
+
+const updateUserProfile = async (req: Request, res: Response) => {
+  const authRequest = asAuthRequest(req);
+
+  const form = req.body as UserProfileRequestDTO;
+
+  const response = await userProfileService.updateUserProfile(
+    authRequest.user.id,
+    form,
+  );
+
+  res.status(200).json({
+    data: response,
+    message: "success",
+  });
+};
+
+export default {
+  updateUserProfile,
+  updateCredentials,
+  getMyAccount,
+};

@@ -11,7 +11,7 @@ export const mapToUrlResponseDTO = (
     original: url.original,
     short: url.short,
     expirationDate: url?.status?.expirationDate,
-    totalVisit,
-    totalVisitor,
+    ...(totalVisit != null && { totalVisit }),
+    ...(totalVisitor != null && { totalVisitor }),
   };
 };

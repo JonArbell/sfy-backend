@@ -71,9 +71,14 @@ const totalVisitorsByUserIdAndDevices = async (userId: string) => {
 };
 
 const top3VisitsByUrl = async (userId: string) => {
-  const allUrls = await urlRepository.findAllUrlIdsByUserId(userId);
+  const allUrls = await urlRepository.findAllUrlIdsByUserId(userId, {
+    take: 3,
+    withVisits: true,
+  });
 
   const urlIds = allUrls.map((u) => u.id);
+
+  console.log(urlIds);
 
   const visits = await visitRepository.findAllVisitsByUrlIds(urlIds);
 
@@ -82,9 +87,11 @@ const top3VisitsByUrl = async (userId: string) => {
   for (const visit of visits) {
     const findUrl = await urlRepository.findById(visit.urlId);
 
+    console.log(findUrl);
+
     if (!findUrl?.short) continue;
 
-    urlCountMap[findUrl?.short] = (urlCountMap[findUrl?.short] || 0) + 1;
+    urlCountMap[findUrl.short] = (urlCountMap[findUrl.short] || 0) + 1;
   }
 
   const result = Object.entries(urlCountMap).map(([name, count]) => ({

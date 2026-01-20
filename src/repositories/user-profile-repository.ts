@@ -1,40 +1,49 @@
-import {prisma} from '../app';
+import { prisma } from "../app";
+import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
 
-const create = (
-    fullName : string, 
-    email : string | null, 
-    icon : string | null, 
-    userId : string
-) => {
+const create = (userId: string, userProfile: UserProfileRequestDTO) => {
+  return prisma.userProfile.create({
+    data: {
+      fullName: userProfile.fullName,
+      email: userProfile.email,
+      icon: null,
+      userId: userId,
+    },
+  });
+};
 
-    return prisma.userProfile.create({
-        data : {
-            fullName : fullName,
-            email : email,
-            icon : icon,
-            userId : userId
-        }
-    });
-}
+const update = (id: string, userProfile: UserProfileRequestDTO) => {
+  return prisma.userProfile.update({
+    where: {
+      id: id,
+    },
+    data: {
+      fullName: userProfile.fullName,
+      email: userProfile.email,
+      icon: userProfile.icon,
+    },
+  });
+};
 
-const findByEmail = (email : string) => {
-    return prisma.userProfile.findUnique({
-        where : {
-            email : email
-        }
-    });
-}
+const findByEmail = (email: string) => {
+  return prisma.userProfile.findUnique({
+    where: {
+      email: email,
+    },
+  });
+};
 
-const findByUserId = (userId : string) => {
-    return prisma.userProfile.findUnique({
-        where : {
-            userId : userId
-        }
-    });
-}
+const findByUserId = (userId: string) => {
+  return prisma.userProfile.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+};
 
 export default {
-    findByUserId,
-    findByEmail,
-    create
-}
+  findByUserId,
+  findByEmail,
+  create,
+  update,
+};
