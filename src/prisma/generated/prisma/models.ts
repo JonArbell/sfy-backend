@@ -8,10 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
-export type * from './models/UserProfile'
-export type * from './models/Url'
-export type * from './models/UrlAccess'
-export type * from './models/Visitor'
-export type * from './models/Visit'
-export type * from './commonInputTypes'
+export type * from './models/User.js'
+export type * from './models/UserProfile.js'
+export type * from './models/Url.js'
+export type * from './models/UrlAccess.js'
+export type * from './models/Visitor.js'
+export type * from './models/Visit.js'
+export type * from './commonInputTypes.js'

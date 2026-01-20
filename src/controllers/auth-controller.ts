@@ -1,48 +1,45 @@
 import { Request, Response } from "express";
-import authService from '../services/auth-service'
+import authService from "../services/auth-service";
 import { RegisterRequestDTO } from "../dtos/request/register-request.dto";
 
-const login = async (req : Request, res : Response) => {
+const login = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
 
-    const {username, password} = req.body;
+  const response = await authService.login(username, password);
 
-    const response = await authService.login(username, password);
+  return res.status(200).json({
+    data: response,
+    message: "success",
+  });
+};
 
-    return res.status(200).json({
-        data : response,
-        message : 'success'
-    });
+const refreshToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
 
-}
+  const newToken =
+    await authService.generateTokenFromRefreshToken(refreshToken);
 
-const refreshToken = async (req : Request, res : Response) => {
+  return res.status(201).json({
+    data: newToken,
+    message: "success",
+  });
+};
 
-    const {refreshToken} = req.body;
-    
-    const newToken = await authService.generateTokenFromRefreshToken(refreshToken);
+const register = async (req: Request, res: Response) => {
+  const data = req.body as RegisterRequestDTO;
 
-    return res.status(201).json({
-        data : newToken,
-        message : 'success'
-    });
+  console.log(data);
 
-}
+  const response = await authService.createAccount(data);
 
-const register = async (req : Request, res : Response) => {
-
-    const data = req.body as RegisterRequestDTO;
-
-    const response = await authService.createAccount(data);
-
-    return res.status(201).json({
-        data : response,
-        message : 'Account created successfully.'
-    });
-
-}
+  return res.status(201).json({
+    data: response,
+    message: "Account created successfully.",
+  });
+};
 
 export default {
-    login,
-    refreshToken,
-    register
-}
+  login,
+  refreshToken,
+  register,
+};

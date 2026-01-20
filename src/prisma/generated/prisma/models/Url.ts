@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums"
-import type * as Prisma from "../internal/prismaNamespace"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model Url
@@ -190,8 +190,8 @@ export type UrlWhereInput = {
   userId?: Prisma.StringFilter<"Url"> | string
   createdAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Url"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   status?: Prisma.XOR<Prisma.UrlAccessNullableScalarRelationFilter, Prisma.UrlAccessWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   visits?: Prisma.VisitListRelationFilter
 }
 
@@ -202,8 +202,8 @@ export type UrlOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   status?: Prisma.UrlAccessOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
   visits?: Prisma.VisitOrderByRelationAggregateInput
 }
 
@@ -217,8 +217,8 @@ export type UrlWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Url"> | string
   createdAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Url"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   status?: Prisma.XOR<Prisma.UrlAccessNullableScalarRelationFilter, Prisma.UrlAccessWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   visits?: Prisma.VisitListRelationFilter
 }, "id" | "short">
 
@@ -252,8 +252,8 @@ export type UrlCreateInput = {
   original: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutUrlsInput
   status?: Prisma.UrlAccessCreateNestedOneWithoutUrlInput
+  user: Prisma.UserCreateNestedOneWithoutUrlsInput
   visits?: Prisma.VisitCreateNestedManyWithoutUrlInput
 }
 
@@ -274,8 +274,8 @@ export type UrlUpdateInput = {
   original?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   status?: Prisma.UrlAccessUpdateOneWithoutUrlNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   visits?: Prisma.VisitUpdateManyWithoutUrlNestedInput
 }
 
@@ -548,8 +548,8 @@ export type UrlCreateWithoutVisitsInput = {
   original: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutUrlsInput
   status?: Prisma.UrlAccessCreateNestedOneWithoutUrlInput
+  user: Prisma.UserCreateNestedOneWithoutUrlsInput
 }
 
 export type UrlUncheckedCreateWithoutVisitsInput = {
@@ -584,8 +584,8 @@ export type UrlUpdateWithoutVisitsInput = {
   original?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   status?: Prisma.UrlAccessUpdateOneWithoutUrlNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutVisitsInput = {
@@ -672,8 +672,8 @@ export type UrlSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   status?: boolean | Prisma.Url$statusArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   visits?: boolean | Prisma.Url$visitsArgs<ExtArgs>
   _count?: boolean | Prisma.UrlCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["url"]>
@@ -709,8 +709,8 @@ export type UrlSelectScalar = {
 
 export type UrlOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "short" | "original" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["url"]>
 export type UrlInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   status?: boolean | Prisma.Url$statusArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   visits?: boolean | Prisma.Url$visitsArgs<ExtArgs>
   _count?: boolean | Prisma.UrlCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -724,8 +724,8 @@ export type UrlIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type $UrlPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Url"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
     status: Prisma.$UrlAccessPayload<ExtArgs> | null
+    user: Prisma.$UserPayload<ExtArgs>
     visits: Prisma.$VisitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1129,8 +1129,8 @@ readonly fields: UrlFieldRefs;
  */
 export interface Prisma__UrlClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   status<T extends Prisma.Url$statusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$statusArgs<ExtArgs>>): Prisma.Prisma__UrlAccessClient<runtime.Types.Result.GetResult<Prisma.$UrlAccessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   visits<T extends Prisma.Url$visitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$visitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.

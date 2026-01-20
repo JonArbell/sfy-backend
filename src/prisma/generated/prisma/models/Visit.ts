@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums"
-import type * as Prisma from "../internal/prismaNamespace"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model Visit
@@ -174,8 +174,8 @@ export type VisitWhereInput = {
   visitorId?: Prisma.StringFilter<"Visit"> | string
   urlId?: Prisma.StringFilter<"Visit"> | string
   visitedAt?: Prisma.DateTimeFilter<"Visit"> | Date | string
-  visitor?: Prisma.XOR<Prisma.VisitorScalarRelationFilter, Prisma.VisitorWhereInput>
   url?: Prisma.XOR<Prisma.UrlScalarRelationFilter, Prisma.UrlWhereInput>
+  visitor?: Prisma.XOR<Prisma.VisitorScalarRelationFilter, Prisma.VisitorWhereInput>
 }
 
 export type VisitOrderByWithRelationInput = {
@@ -183,8 +183,8 @@ export type VisitOrderByWithRelationInput = {
   visitorId?: Prisma.SortOrder
   urlId?: Prisma.SortOrder
   visitedAt?: Prisma.SortOrder
-  visitor?: Prisma.VisitorOrderByWithRelationInput
   url?: Prisma.UrlOrderByWithRelationInput
+  visitor?: Prisma.VisitorOrderByWithRelationInput
 }
 
 export type VisitWhereUniqueInput = Prisma.AtLeast<{
@@ -195,8 +195,8 @@ export type VisitWhereUniqueInput = Prisma.AtLeast<{
   visitorId?: Prisma.StringFilter<"Visit"> | string
   urlId?: Prisma.StringFilter<"Visit"> | string
   visitedAt?: Prisma.DateTimeFilter<"Visit"> | Date | string
-  visitor?: Prisma.XOR<Prisma.VisitorScalarRelationFilter, Prisma.VisitorWhereInput>
   url?: Prisma.XOR<Prisma.UrlScalarRelationFilter, Prisma.UrlWhereInput>
+  visitor?: Prisma.XOR<Prisma.VisitorScalarRelationFilter, Prisma.VisitorWhereInput>
 }, "id">
 
 export type VisitOrderByWithAggregationInput = {
@@ -222,8 +222,8 @@ export type VisitScalarWhereWithAggregatesInput = {
 export type VisitCreateInput = {
   id?: string
   visitedAt?: Date | string
-  visitor: Prisma.VisitorCreateNestedOneWithoutVisitsInput
   url: Prisma.UrlCreateNestedOneWithoutVisitsInput
+  visitor: Prisma.VisitorCreateNestedOneWithoutVisitsInput
 }
 
 export type VisitUncheckedCreateInput = {
@@ -236,8 +236,8 @@ export type VisitUncheckedCreateInput = {
 export type VisitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  visitor?: Prisma.VisitorUpdateOneRequiredWithoutVisitsNestedInput
   url?: Prisma.UrlUpdateOneRequiredWithoutVisitsNestedInput
+  visitor?: Prisma.VisitorUpdateOneRequiredWithoutVisitsNestedInput
 }
 
 export type VisitUncheckedUpdateInput = {
@@ -522,8 +522,8 @@ export type VisitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   visitorId?: boolean
   urlId?: boolean
   visitedAt?: boolean
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["visit"]>
 
 export type VisitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -531,8 +531,8 @@ export type VisitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   visitorId?: boolean
   urlId?: boolean
   visitedAt?: boolean
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["visit"]>
 
 export type VisitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -540,8 +540,8 @@ export type VisitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   visitorId?: boolean
   urlId?: boolean
   visitedAt?: boolean
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["visit"]>
 
 export type VisitSelectScalar = {
@@ -553,23 +553,23 @@ export type VisitSelectScalar = {
 
 export type VisitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "visitorId" | "urlId" | "visitedAt", ExtArgs["result"]["visit"]>
 export type VisitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }
 export type VisitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }
 export type VisitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
   url?: boolean | Prisma.UrlDefaultArgs<ExtArgs>
+  visitor?: boolean | Prisma.VisitorDefaultArgs<ExtArgs>
 }
 
 export type $VisitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Visit"
   objects: {
-    visitor: Prisma.$VisitorPayload<ExtArgs>
     url: Prisma.$UrlPayload<ExtArgs>
+    visitor: Prisma.$VisitorPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -970,8 +970,8 @@ readonly fields: VisitFieldRefs;
  */
 export interface Prisma__VisitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  visitor<T extends Prisma.VisitorDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VisitorDefaultArgs<ExtArgs>>): Prisma.Prisma__VisitorClient<runtime.Types.Result.GetResult<Prisma.$VisitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   url<T extends Prisma.UrlDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UrlDefaultArgs<ExtArgs>>): Prisma.Prisma__UrlClient<runtime.Types.Result.GetResult<Prisma.$UrlPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  visitor<T extends Prisma.VisitorDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VisitorDefaultArgs<ExtArgs>>): Prisma.Prisma__VisitorClient<runtime.Types.Result.GetResult<Prisma.$VisitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

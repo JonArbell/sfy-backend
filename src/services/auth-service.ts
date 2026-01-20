@@ -66,6 +66,8 @@ const createAccount = async (
 
   const userExistsByEmail = await userProfileRepository.findByEmail(data.email);
 
+  console.log(userExistsByEmail);
+
   if (userExistsByUsername)
     throw new HttpError(409, "Username already taken.", "ConflictError");
 
