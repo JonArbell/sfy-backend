@@ -24,6 +24,8 @@ authenticated.delete("/:id", urlController.deleteUrlById);
 
 router.get("/short/:shortUrl", urlController.getUrlByShort);
 
+router.post("/short/:shortUrl/verify-password", urlController.verifyPassword);
+
 router.use(authenticated);
 
 export default router;

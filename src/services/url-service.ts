@@ -50,13 +50,15 @@ const viewOriginalByShort = async (
   shortUrl: string,
   visitor: ViewOriginalUrlRequestDTO,
 ) => {
-  const originalUrl = await urlRepository.findUrlByShort(shortUrl);
+  const findUrl = await urlRepository.findUrlByShort(shortUrl);
 
   const findVisitor = await visitorRepository.findVisitorByIpAddress(
     visitor.ipAddress,
   );
 
-  if (!originalUrl)
+  console.log(findVisitor);
+
+  if (!findUrl)
     throw new HttpError(404, "No original url found.", "ItemNotFound");
 
   if (!findVisitor) {
@@ -66,11 +68,11 @@ const viewOriginalByShort = async (
       visitor.deviceType,
     );
 
-    await visitRepository.create(originalUrl.id, newVisitor.id);
+    await visitRepository.create(findUrl.id, newVisitor.id);
   } else {
     findVisitor.deviceType = visitor.deviceType;
 
-    await visitRepository.create(originalUrl.id, findVisitor.id);
+    await visitRepository.create(findUrl.id, findVisitor.id);
 
     await visitorRepository.update(
       findVisitor.id,
@@ -80,7 +82,34 @@ const viewOriginalByShort = async (
     );
   }
 
-  return originalUrl.original;
+  const findAccess = await urlAccessRepository.findByUrlId(findUrl.id);
+
+  if (!findAccess) throw new HttpError(500, "Internal server error.");
+
+  if (!findAccess.active) throw new HttpError(500, "This url is not active.");
+
+  return {
+    original: findUrl.original,
+    password: findAccess.password,
+  };
+};
+
+const verifyPassword = async (short: string, password: string) => {
+  const findUrl = await urlRepository.findUrlByShort(short);
+
+  if (!findUrl) throw new HttpError(404, "No url found.");
+
+  const findAccess = await urlAccessRepository.findByUrlId(findUrl.id);
+
+  if (!findAccess) throw new HttpError(500, "Internal server error.");
+
+  if (!findAccess.password) throw new HttpError(500, "Internal server error.");
+
+  const passwordMatch = await cryptoUtil.decode(password, findAccess.password);
+
+  if (!passwordMatch) throw new HttpError(409, "Password not match.");
+
+  return findUrl.original;
 };
 
 const findAllIncludeUrlAccessByUserId = async (
@@ -154,6 +183,7 @@ const find5RecentUrlsByUserId = async (userId: string) => {
 };
 
 export default {
+  verifyPassword,
   find5RecentUrlsByUserId,
   totalCount,
   findMostVisited,

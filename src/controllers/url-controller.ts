@@ -84,10 +84,34 @@ const getUrlByShort = async (req: Request, res: Response) => {
     visitorRequest,
   );
 
-  res.redirect(response);
+  if (response.password) {
+    res.status(200).render("enter-password", {
+      shortUrl,
+      backendUrl: "http://localhost:8000/api",
+    });
+    return;
+  }
+
+  res.status(200).redirect(response.original);
+};
+
+const verifyPassword = async (req: Request, res: Response) => {
+  const shortUrl = req.params.shortUrl as string;
+
+  const password = req.body.password as string;
+
+  const response = await urlService.verifyPassword(shortUrl, password);
+
+  console.log(response);
+
+  res.status(200).json({
+    data: response,
+    message: "success",
+  });
 };
 
 export default {
+  verifyPassword,
   getUrlById,
   getUrlByShort,
   getAllUrls,

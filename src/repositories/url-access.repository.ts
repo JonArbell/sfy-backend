@@ -11,6 +11,15 @@ const create = (urlId: string, password?: string, expirationDate?: string) => {
   });
 };
 
+const findByUrlId = (urlId: string) => {
+  return prisma.urlAccess.findFirst({
+    where: {
+      urlId: urlId,
+    },
+  });
+};
+
 export default {
+  findByUrlId,
   create,
 };
