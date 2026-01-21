@@ -25,7 +25,7 @@ export const credentialsValidator = z.object({
     ),
 
   password: passwordSchema,
-  provider: z.enum(AuthProvider),
+  provider: z.enum(AuthProvider).default(AuthProvider.LOCAL),
 });
 
 export const updateCredentialsValidator = credentialsValidator
