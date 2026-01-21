@@ -36,7 +36,7 @@ const updateUserProfile = async (
   userProfile: UserProfileRequestDTO,
   icon?: MulterFile,
 ): Promise<MyAccountResponseDTO> => {
-  const findUser = await userRepository.findById(userId);
+  const findUser = await userRepository.findByIdAndProvider(userId);
   if (!findUser) throw new HttpError(404, "No user found.");
 
   const findProfile = await userProfileRepository.findByUserId(findUser.id);
@@ -44,10 +44,11 @@ const updateUserProfile = async (
 
   const iconUrl = icon ? await parseIcon(icon) : findProfile.icon;
 
+  userProfile.icon = iconUrl ?? undefined;
+
   const updateProfile = await userProfileRepository.update(
     findProfile.id,
     userProfile,
-    iconUrl,
   );
 
   return {
@@ -55,6 +56,7 @@ const updateUserProfile = async (
     email: updateProfile.email,
     fullName: updateProfile.fullName,
     icon: updateProfile.icon,
+    provider: findUser.provider,
     createdAt: findUser.createdAt,
     updatedAt: updateProfile.updatedAt,
     username: findUser.username,

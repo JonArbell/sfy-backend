@@ -1,4 +1,5 @@
 import z from "zod";
+import { AuthProvider } from "../../prisma/generated/prisma/enums";
 
 const passwordSchema = z
   .string()
@@ -24,6 +25,7 @@ export const credentialsValidator = z.object({
     ),
 
   password: passwordSchema,
+  provider: z.enum(AuthProvider),
 });
 
 export const updateCredentialsValidator = credentialsValidator

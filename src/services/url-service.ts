@@ -56,8 +56,6 @@ const viewOriginalByShort = async (
     visitor.ipAddress,
   );
 
-  console.log(findVisitor);
-
   if (!findUrl)
     throw new HttpError(404, "No original url found.", "ItemNotFound");
 
@@ -142,6 +140,8 @@ const totalCount = async (userId: string) => {
 
 const findMostVisited = async (userId: string) => {
   const findAllUrls = await urlRepository.findAllUrlIdsByUserId(userId);
+
+  if (findAllUrls.length < 1) return null;
 
   const urlIds = findAllUrls.map((url) => url.id);
 

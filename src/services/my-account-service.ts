@@ -2,9 +2,13 @@ import { HttpError } from "../exceptions/httpError";
 import userRepository from "../repositories/user-repository";
 import userProfileRepository from "../repositories/user-profile-repository";
 import { MyAccountResponseDTO } from "../dtos/response/my-account-response.dto";
+import { AuthProvider } from "../prisma/generated/prisma/enums";
 
-const findMyAccount = async (userId: string): Promise<MyAccountResponseDTO> => {
-  const user = await userRepository.findById(userId);
+const findMyAccount = async (
+  userId: string,
+  provider: AuthProvider,
+): Promise<MyAccountResponseDTO> => {
+  const user = await userRepository.findByIdAndProvider(userId, provider);
 
   if (!user) throw new HttpError(404, "User not found.", "NotFoundError");
 
@@ -20,6 +24,7 @@ const findMyAccount = async (userId: string): Promise<MyAccountResponseDTO> => {
     fullName: findProfile.fullName,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt ?? findProfile.updatedAt,
+    provider: user.provider,
     icon: findProfile?.icon,
   };
 };

@@ -11,6 +11,8 @@ export const userProfileValidator = z.object({
       "Full name may contain letters, spaces, hyphens, and apostrophes only",
     ),
 
+  icon: z.string().optional(),
+
   email: z.email({ message: "Invalid email address" }),
 });
 

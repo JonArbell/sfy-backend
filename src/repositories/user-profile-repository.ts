@@ -12,11 +12,7 @@ const create = (userId: string, userProfile: UserProfileRequestDTO) => {
   });
 };
 
-const update = (
-  id: string,
-  userProfile: UserProfileRequestDTO,
-  icon?: string | null,
-) => {
+const update = (id: string, userProfile: UserProfileRequestDTO) => {
   return prisma.userProfile.update({
     where: {
       id: id,
@@ -24,7 +20,7 @@ const update = (
     data: {
       fullName: userProfile.fullName,
       email: userProfile.email,
-      icon: icon,
+      icon: userProfile.icon,
     },
   });
 };

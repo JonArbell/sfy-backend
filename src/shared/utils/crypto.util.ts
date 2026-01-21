@@ -1,13 +1,16 @@
 import bcrypt from "bcrypt";
 
-const SALT_ROUNDS = 12; 
+const SALT_ROUNDS = 12;
 
-const encode = async (text : string) => await bcrypt.hash(text, SALT_ROUNDS);
+const encode = async (text: string) => await bcrypt.hash(text, SALT_ROUNDS);
 
-const decode = async (value: string, hashed: string) => 
-    await bcrypt.compare(value, hashed);
+const decode = async (value: string, hashed: string) =>
+  await bcrypt.compare(value, hashed);
+
+const randomUUID = () => crypto.randomUUID();
 
 export default {
-    encode,
-    decode
-}
+  randomUUID,
+  encode,
+  decode,
+};

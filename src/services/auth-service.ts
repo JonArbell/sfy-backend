@@ -8,6 +8,8 @@ import { MyAccountResponseDTO } from "../dtos/response/my-account-response.dto";
 import { TokenPayload } from "../shared/types/token-payload";
 import { UserRequestDTO } from "../dtos/request/user-request.dto";
 import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
+import { GoogleOAuthProfileRequestDTO } from "../dtos/request/google-auth-request.dto";
+import { AuthProvider } from "../prisma/generated/prisma/enums";
 
 const login = async (username: string, password: string) => {
   const findUser = await userRepository.findByUsername(username);
@@ -23,6 +25,7 @@ const login = async (username: string, password: string) => {
   const tokenPayload: TokenPayload = {
     id: findUser.id,
     type: "access",
+    provider: findUser.provider,
     username: findUser.username,
   };
 
@@ -47,6 +50,7 @@ const generateTokenFromRefreshToken = async (refreshToken: string) => {
   const tokenPayload: TokenPayload = {
     id: refreshTokenPayload.id,
     username: refreshTokenPayload.username,
+    provider: refreshTokenPayload.provider,
     type: "access",
   };
 
@@ -66,8 +70,6 @@ const createAccount = async (
 
   const userExistsByEmail = await userProfileRepository.findByEmail(data.email);
 
-  console.log(userExistsByEmail);
-
   if (userExistsByUsername)
     throw new HttpError(409, "Username already taken.", "ConflictError");
 
@@ -79,6 +81,7 @@ const createAccount = async (
   const credential: UserRequestDTO = {
     username: data.username,
     password: hashedPassword,
+    provider: AuthProvider.LOCAL,
   };
 
   const userProfile: UserProfileRequestDTO = {
@@ -94,18 +97,114 @@ const createAccount = async (
   );
 
   return {
-    id: savedProfile.id,
+    id: savedUser.id,
     username: savedUser.username,
     fullName: savedProfile.fullName,
     email: savedProfile.email,
     icon: savedProfile.icon,
+    provider: savedUser.provider,
     createdAt: savedUser.createdAt,
     updatedAt: savedProfile.updatedAt,
   };
+};
+
+const findOrCreateGoogleUser = async (
+  googleProfile: GoogleOAuthProfileRequestDTO,
+) => {
+  const email = googleProfile._json.email;
+
+  if (!email) throw new Error("Google account has no email");
+
+  const existingProfile = await userProfileRepository.findByEmail(email);
+
+  if (existingProfile) {
+    const findUser = await userRepository.findByIdAndProvider(
+      existingProfile.userId,
+      AuthProvider.GOOGLE,
+    );
+
+    if (!findUser) throw new HttpError(500, "Internal server error.");
+
+    const tokenPayload: TokenPayload = {
+      id: findUser.id,
+      type: "access",
+      provider: findUser.provider,
+      username: findUser.username,
+    };
+
+    const token = generateToken(tokenPayload, "1h");
+
+    tokenPayload.type = "refresh";
+
+    const refreshToken = generateToken(tokenPayload, "7d");
+
+    return {
+      token: token,
+      refreshToken: refreshToken,
+    };
+  }
+
+  const username = await generateUsername(googleProfile.displayName, email);
+
+  const fullName = googleProfile.displayName;
+
+  const icon = googleProfile.photos[0].value;
+
+  const dummyPassword = cryptoUtil.randomUUID();
+
+  const savedUser = await userRepository.create({
+    password: dummyPassword,
+    username: username,
+    provider: AuthProvider.GOOGLE,
+  });
+
+  await userProfileRepository.create(savedUser.id, {
+    fullName,
+    email,
+    icon,
+  });
+
+  const tokenPayload: TokenPayload = {
+    id: savedUser.id,
+    type: "access",
+    provider: savedUser.provider,
+    username: savedUser.username,
+  };
+
+  const token = generateToken(tokenPayload, "1h");
+
+  tokenPayload.type = "refresh";
+
+  const refreshToken = generateToken(tokenPayload, "7d");
+
+  return {
+    token: token,
+    refreshToken: refreshToken,
+  };
+};
+
+const generateUsername = async (
+  fullName: string,
+  email: string,
+): Promise<string> => {
+  const base = email
+    .split("@")[0]
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+  let username = base;
+
+  let exists = await userRepository.findByUsername(username);
+  while (exists) {
+    username = `${base}${Math.floor(1000 + Math.random() * 9000)}`;
+    exists = await userRepository.findByUsername(username);
+  }
+
+  return username;
 };
 
 export default {
   generateTokenFromRefreshToken,
   createAccount,
   login,
+  findOrCreateGoogleUser,
 };

@@ -1,5 +1,6 @@
 import { prisma } from "../app";
 import { UserRequestDTO } from "../dtos/request/user-request.dto";
+import { AuthProvider } from "../prisma/generated/prisma/enums";
 
 const findByUsername = (username: string) => {
   return prisma.user.findUnique({
@@ -9,10 +10,14 @@ const findByUsername = (username: string) => {
   });
 };
 
-const findById = (id: string) => {
+const findByIdAndProvider = (
+  id: string,
+  provider: AuthProvider = AuthProvider.LOCAL,
+) => {
   return prisma.user.findUnique({
     where: {
       id: id,
+      provider: provider,
     },
   });
 };
@@ -22,6 +27,7 @@ const create = (credentials: UserRequestDTO) => {
     data: {
       username: credentials.username,
       password: credentials.password,
+      provider: credentials.provider,
     },
   });
 };
@@ -43,7 +49,7 @@ const deleteAll = () => {
 };
 
 export default {
-  findById,
+  findByIdAndProvider,
   deleteAll,
   findByUsername,
   create,

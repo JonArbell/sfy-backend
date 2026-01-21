@@ -10,7 +10,10 @@ import { MulterFile } from "../shared/types/multerfile.type";
 const getMyAccount = async (req: Request, res: Response) => {
   const authRequest = asAuthRequest(req);
 
-  const myAccount = await myAccountService.findMyAccount(authRequest.user.id);
+  const myAccount = await myAccountService.findMyAccount(
+    authRequest.user.id,
+    authRequest.user.provider,
+  );
 
   return res.status(200).json({
     data: myAccount,

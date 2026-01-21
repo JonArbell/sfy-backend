@@ -78,16 +78,12 @@ const top3VisitsByUrl = async (userId: string) => {
 
   const urlIds = allUrls.map((u) => u.id);
 
-  console.log(urlIds);
-
   const visits = await visitRepository.findAllVisitsByUrlIds(urlIds);
 
   const urlCountMap: Record<string, number> = {};
 
   for (const visit of visits) {
     const findUrl = await urlRepository.findById(visit.urlId);
-
-    console.log(findUrl);
 
     if (!findUrl?.short) continue;
 

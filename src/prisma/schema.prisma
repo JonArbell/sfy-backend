@@ -7,10 +7,16 @@ datasource db {
   provider = "postgresql"
 }
 
+enum AuthProvider {
+  GOOGLE
+  LOCAL
+}
+
 model User {
   id          String       @id @default(uuid())
   username    String       @unique
   password    String
+  provider    AuthProvider @default(LOCAL)
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   urls        Url[]

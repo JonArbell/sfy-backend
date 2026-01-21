@@ -5,13 +5,14 @@ import {
 import { HttpError } from "../exceptions/httpError";
 import userProfileRepository from "../repositories/user-profile-repository";
 import userRepository from "../repositories/user-repository";
+import { AuthProvider } from "../prisma/generated/prisma/enums";
 import cryptoUtil from "../shared/utils/crypto.util";
 
 const updateUsernameAndPassword = async (
   id: string,
   updateCredentials: UpdateUserRequestDTO,
 ) => {
-  const findUser = await userRepository.findById(id);
+  const findUser = await userRepository.findByIdAndProvider(id);
 
   if (!findUser)
     throw new HttpError(
@@ -44,6 +45,7 @@ const updateUsernameAndPassword = async (
   const credentials: UserRequestDTO = {
     password: await cryptoUtil.encode(updateCredentials.password),
     username: updateCredentials.username,
+    provider: AuthProvider.LOCAL,
   };
 
   const update = await userRepository.updateCredentials(id, credentials);
