@@ -7,14 +7,8 @@ import { fileURLToPath } from "url";
 
 const PORT = 8000;
 
-const isProduction = false;
-
-const origin = isProduction
-  ? "https://s-fy.netlify.app"
-  : "http://localhost:4200";
-
 const corsOptions: cors.CorsOptions = {
-  origin: [origin],
+  origin: ["https://s-fy.netlify.app", "http://localhost:4200"],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: false,
