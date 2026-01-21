@@ -66,8 +66,6 @@ const deleteUrlById = async (req: Request, res: Response) => {
     authRequest.user.id,
   );
 
-  console.log(response);
-
   res.status(200).json({
     data: response,
     message: "success",
@@ -101,8 +99,6 @@ const verifyPassword = async (req: Request, res: Response) => {
   const password = req.body.password as string;
 
   const response = await urlService.verifyPassword(shortUrl, password);
-
-  console.log(response);
 
   res.status(200).json({
     data: response,

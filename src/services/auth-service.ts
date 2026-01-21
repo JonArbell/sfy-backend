@@ -148,7 +148,7 @@ const findOrCreateGoogleUser = async (
 
   const fullName = googleProfile.displayName;
 
-  const icon = googleProfile.photos[0].value;
+  const icon = googleProfile._json.picture;
 
   const dummyPassword = cryptoUtil.randomUUID();
 

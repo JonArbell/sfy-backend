@@ -6,7 +6,7 @@ const create = (userId: string, userProfile: UserProfileRequestDTO) => {
     data: {
       fullName: userProfile.fullName,
       email: userProfile.email,
-      icon: null,
+      icon: userProfile.icon,
       userId: userId,
     },
   });

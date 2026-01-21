@@ -1,6 +1,7 @@
 import { UserProfileRequestDTO } from "../dtos/request/user-profile-request.dto";
 import { MyAccountResponseDTO } from "../dtos/response/my-account-response.dto";
 import { HttpError } from "../exceptions/httpError";
+import { AuthProvider } from "../prisma/generated/prisma/enums";
 import userProfileRepository from "../repositories/user-profile-repository";
 import userRepository from "../repositories/user-repository";
 import s3 from "../s3client";
@@ -33,10 +34,11 @@ export const parseIcon = async (icon?: MulterFile): Promise<string | null> => {
 
 const updateUserProfile = async (
   userId: string,
+  provider: AuthProvider,
   userProfile: UserProfileRequestDTO,
   icon?: MulterFile,
 ): Promise<MyAccountResponseDTO> => {
-  const findUser = await userRepository.findByIdAndProvider(userId);
+  const findUser = await userRepository.findByIdAndProvider(userId, provider);
   if (!findUser) throw new HttpError(404, "No user found.");
 
   const findProfile = await userProfileRepository.findByUserId(findUser.id);
@@ -44,11 +46,14 @@ const updateUserProfile = async (
 
   const iconUrl = icon ? await parseIcon(icon) : findProfile.icon;
 
-  userProfile.icon = iconUrl ?? undefined;
+  const profileUpdatePayload: UserProfileRequestDTO = {
+    ...userProfile,
+    icon: iconUrl ?? undefined,
+  };
 
   const updateProfile = await userProfileRepository.update(
     findProfile.id,
-    userProfile,
+    profileUpdatePayload,
   );
 
   return {

@@ -29,8 +29,6 @@ const refreshToken = async (req: Request, res: Response) => {
 const register = async (req: Request, res: Response) => {
   const data = req.body as RegisterRequestDTO;
 
-  console.log(data);
-
   const response = await authService.createAccount(data);
 
   return res.status(201).json({

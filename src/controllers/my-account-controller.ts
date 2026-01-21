@@ -49,6 +49,7 @@ const updateUserProfile = async (req: Request, res: Response) => {
 
   const response = await userProfileService.updateUserProfile(
     authRequest.user.id,
+    authRequest.user.provider,
     form,
     icon,
   );
