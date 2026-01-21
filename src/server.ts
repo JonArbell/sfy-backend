@@ -4,6 +4,7 @@ import routes from "./routes/index.route";
 import { errorHandler } from "./middlewares/error-exception-handler";
 import path from "path";
 import { fileURLToPath } from "url";
+import { prisma } from "./app";
 
 const PORT = 8000;
 
@@ -27,10 +28,12 @@ app.use(routes);
 
 app.use(errorHandler);
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Panis",
-  });
+app.get("/", async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`SELECT NOW()`;
+    res.json({ ok: true, now: result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err });
+  }
 });
-
 app.listen(PORT, () => console.log(`Running on PORT : ${PORT}`));

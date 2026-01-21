@@ -27,10 +27,4 @@ router.delete("/delete", async (req, res, next) => {
   res.json({ message: "All users deleted" });
 });
 
-router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "try",
-  });
-});
-
 export default api;
