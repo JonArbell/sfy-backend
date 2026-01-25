@@ -46,7 +46,13 @@ const loginOrCreateGoogleAccount = async (
 const handleRedirectGoogle = async (req: Request, res: Response) => {
   const user = req.user as { token: string; refreshToken: string };
 
-  const redirectUrl = new URL("http://localhost:4200/auth/callback");
+  const production = "https://s-fy.netlify.app/";
+
+  const isProd = true;
+
+  const local = "http://localhost:4200";
+
+  const redirectUrl = new URL(`${isProd ? production : local}/auth/callback`);
   redirectUrl.searchParams.append("token", user.token);
   redirectUrl.searchParams.append("refreshToken", user.refreshToken);
 
