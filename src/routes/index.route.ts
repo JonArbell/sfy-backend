@@ -10,6 +10,8 @@ const api: Router = express.Router();
 
 const router: Router = express.Router();
 
+api.use(urlRoutes);
+
 api.use("/api", router);
 
 router.use(authRoutes);
