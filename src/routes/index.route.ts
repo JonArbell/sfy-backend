@@ -13,9 +13,8 @@ const router: Router = express.Router();
 api.use("/api", router);
 
 router.use(authRoutes);
-router.use("/me", myAccountRoutes);
 
-router.use("/urls", urlRoutes);
+router.use("/me", myAccountRoutes);
 
 router.use("/visitors", visitorRoutes);
 

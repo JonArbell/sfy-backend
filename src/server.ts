@@ -5,7 +5,6 @@ import { errorHandler } from "./middlewares/error-exception-handler";
 import path from "path";
 import { fileURLToPath } from "url";
 import { prisma } from "./app";
-
 const PORT = 8000;
 
 const corsOptions: cors.CorsOptions = {
@@ -36,4 +35,5 @@ app.get("/", async (req, res) => {
     res.status(500).json({ ok: false, error: err });
   }
 });
+
 app.listen(PORT, () => console.log(`Running on PORT : ${PORT}`));
