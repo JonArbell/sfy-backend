@@ -8,9 +8,16 @@ import s3 from "../s3client";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import "dotenv/config";
 
+const BUCKET_NAME = process.env.AWS_S3_BUCKET!;
+
 type MulterFile = Express.Multer.File;
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET!;
+const getBucketName = () => {
+  if (!process.env.AWS_S3_BUCKET) {
+    throw new Error("AWS_S3_BUCKET environment variable is not defined");
+  }
+  return process.env.AWS_S3_BUCKET;
+};
 
 export const parseIcon = async (icon?: MulterFile): Promise<string | null> => {
   if (!icon) return null;
@@ -22,7 +29,7 @@ export const parseIcon = async (icon?: MulterFile): Promise<string | null> => {
   const fileKey = `sfy/icons/${Date.now()}_${icon.originalname}`;
 
   const uploadCommand = new PutObjectCommand({
-    Bucket: BUCKET_NAME,
+    Bucket: getBucketName(),
     Key: fileKey,
     Body: icon.buffer,
     ContentType: icon.mimetype,
