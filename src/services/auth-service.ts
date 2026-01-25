@@ -68,6 +68,8 @@ const createAccount = async (
     data.username,
   );
 
+  const confirmPasswordMatch = data.confirmPassword === data.password;
+
   const userExistsByEmail = await userProfileRepository.findByEmail(data.email);
 
   if (userExistsByUsername)
@@ -75,6 +77,9 @@ const createAccount = async (
 
   if (userExistsByEmail)
     throw new HttpError(409, "Email already registered.", "ConflictError");
+
+  if (!confirmPasswordMatch)
+    throw new HttpError(409, "Passwords not match.", "ConflictError");
 
   const hashedPassword = await cryptoUtil.encode(data.password);
 
