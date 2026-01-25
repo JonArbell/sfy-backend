@@ -6,6 +6,7 @@ import userProfileRepository from "../repositories/user-profile-repository";
 import userRepository from "../repositories/user-repository";
 import s3 from "../s3client";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import "dotenv/config";
 
 type MulterFile = Express.Multer.File;
 
