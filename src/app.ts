@@ -11,6 +11,6 @@ const prisma = new PrismaClient({ adapter });
 const app: Application = express();
 
 app.use(express.json());
-// app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 export { prisma, app };
