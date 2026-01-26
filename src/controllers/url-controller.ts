@@ -101,10 +101,16 @@ const getUrlByShort = async (req: Request, res: Response) => {
     visitorRequest,
   );
 
+  const isProd = true;
+
+  const production = "https://sfy-tnqq.onrender.com/api";
+
+  const local = "http://localhost:8000/api";
+
   if (response.password) {
     res.status(200).render("enter-password", {
       shortUrl,
-      backendUrl: "http://localhost:8000/api",
+      backendUrl: isProd ? production : local,
     });
     return;
   }

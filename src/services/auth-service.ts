@@ -207,7 +207,10 @@ const generateUsername = async (
   return username;
 };
 
+const forgotPassword = async () => {};
+
 export default {
+  forgotPassword,
   generateTokenFromRefreshToken,
   createAccount,
   login,

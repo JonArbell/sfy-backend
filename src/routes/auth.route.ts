@@ -47,6 +47,8 @@ router.post(
   authController.register,
 );
 
+router.post("/");
+
 router.post("/refresh", authController.refreshToken);
 
 export default router;
