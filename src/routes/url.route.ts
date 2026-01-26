@@ -26,6 +26,8 @@ authenticated.get("/:id", urlController.getUrlById);
 
 authenticated.delete("/:id", urlController.deleteUrlById);
 
+authenticated.put("/:id", urlController.updateUrlById);
+
 router.use("/api/urls", authenticated);
 
 export default router;

@@ -54,6 +54,18 @@ const create = (originalUrl: string, shortUrl: string, userId: string) => {
   });
 };
 
+const update = (id: string, originalUrl: string, userId: string) => {
+  return prisma.url.update({
+    where: {
+      id: id,
+      userId: userId,
+    },
+    data: {
+      original: originalUrl,
+    },
+  });
+};
+
 const findUrlByShort = (shortUrl: string) => {
   return prisma.url.findUnique({
     where: {
@@ -126,4 +138,5 @@ export default {
   findAllUrlIdsByUserId,
   deleteUrlByIdAndUserId,
   findById,
+  update,
 };

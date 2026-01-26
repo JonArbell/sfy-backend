@@ -11,6 +11,24 @@ const create = (urlId: string, password?: string, expirationDate?: string) => {
   });
 };
 
+const update = (
+  urlId: string,
+  active: boolean,
+  password?: string,
+  expirationDate?: string,
+) => {
+  return prisma.urlAccess.update({
+    where: {
+      urlId: urlId,
+    },
+    data: {
+      password: password,
+      expirationDate: expirationDate ? new Date(expirationDate) : null,
+      active: active,
+    },
+  });
+};
+
 const findByUrlId = (urlId: string) => {
   return prisma.urlAccess.findFirst({
     where: {
@@ -22,4 +40,5 @@ const findByUrlId = (urlId: string) => {
 export default {
   findByUrlId,
   create,
+  update,
 };

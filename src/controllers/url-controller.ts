@@ -72,6 +72,25 @@ const deleteUrlById = async (req: Request, res: Response) => {
   });
 };
 
+const updateUrlById = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  const authRequest = asAuthRequest(req);
+
+  const data = req.body as ShortenUrlRequestDTO;
+
+  const response = await urlService.updateUrlById(
+    id,
+    authRequest.user.id,
+    data,
+  );
+
+  res.status(200).json({
+    data: response,
+    message: "success",
+  });
+};
+
 const getUrlByShort = async (req: Request, res: Response) => {
   const shortUrl = req.params.shortUrl as string;
 
@@ -107,6 +126,7 @@ const verifyPassword = async (req: Request, res: Response) => {
 };
 
 export default {
+  updateUrlById,
   verifyPassword,
   getUrlById,
   getUrlByShort,

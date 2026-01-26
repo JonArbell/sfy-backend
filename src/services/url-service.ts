@@ -110,6 +110,40 @@ const verifyPassword = async (short: string, password: string) => {
   return findUrl.original;
 };
 
+const updateUrlById = async (
+  id: string,
+  userId: string,
+  data: ShortenUrlRequestDTO,
+) => {
+  const findUrl = await urlRepository.findByIdAndUserId(id, userId);
+
+  if (!findUrl) throw new HttpError(404, "No url found to be update.");
+
+  const updateUrl = await urlRepository.update(id, data.url, userId);
+
+  const password = data.password ? await cryptoUtil.encode(data.password) : "";
+
+  const findUrlAccess = await urlAccessRepository.findByUrlId(updateUrl.id);
+
+  if (!findUrlAccess)
+    throw new HttpError(404, "No url access found to be update.");
+
+  const updateAccess = await urlAccessRepository.update(
+    updateUrl.id,
+    true,
+    password,
+    data.expirationDate,
+  );
+
+  return {
+    id: updateUrl.id,
+    active: updateAccess.active,
+    original: updateUrl.original,
+    short: updateUrl.short,
+    expirationDate: updateAccess.expirationDate,
+  };
+};
+
 const findAllIncludeUrlAccessByUserId = async (
   userId: string,
   pageable: PageRequest,
@@ -192,4 +226,5 @@ export default {
   findAllIncludeUrlAccessByUserId,
   shortenUrlByUserId,
   viewOriginalByShort,
+  updateUrlById,
 };
