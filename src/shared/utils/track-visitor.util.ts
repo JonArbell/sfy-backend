@@ -7,8 +7,12 @@ export const trackVisitor = (req: any): ViewOriginalUrlRequestDTO => {
     req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const ipAddress = Array.isArray(ip) ? ip[0] : ip;
 
+  console.log(ip);
+
   const source = req.headers["user-agent"] ?? "unknown";
   const parser = new UserAgent().hydrate(source);
+
+  console.log(parser);
 
   const agent = parser.Agent;
 
@@ -21,8 +25,6 @@ export const trackVisitor = (req: any): ViewOriginalUrlRequestDTO => {
   const geo = geoip.lookup(ipAddress);
   const location =
     [geo?.city, geo?.country].filter(Boolean).join(", ") || "unknown";
-
-  console.log(agent);
 
   return {
     ipAddress: ipAddress,
