@@ -6,7 +6,10 @@ import { authenticateJWT } from "../middlewares/token-middleware";
 
 const router: Router = express.Router();
 
-router.post("/short/:shortUrl/verify-password", urlController.verifyPassword);
+router.post(
+  "/api/urls/short/:shortUrl/verify-password",
+  urlController.verifyPassword,
+);
 
 router.get("/:shortUrl", urlController.getUrlByShort);
 
