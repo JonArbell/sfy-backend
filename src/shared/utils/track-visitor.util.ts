@@ -22,7 +22,7 @@ export const trackVisitor = (req: any): ViewOriginalUrlRequestDTO => {
   const location =
     [geo?.city, geo?.country].filter(Boolean).join(", ") || "unknown";
 
-  console.log(geo);
+  console.log(agent);
 
   return {
     ipAddress: ipAddress,
