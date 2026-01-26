@@ -8,15 +8,15 @@ import s3 from "../s3client";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import "dotenv/config";
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET!;
-
 type MulterFile = Express.Multer.File;
 
 const getBucketName = () => {
-  if (!process.env.AWS_S3_BUCKET) {
+  const BUCKET_NAME = process.env.AWS_S3_BUCKET;
+
+  if (!BUCKET_NAME) {
     throw new Error("AWS_S3_BUCKET environment variable is not defined");
   }
-  return process.env.AWS_S3_BUCKET;
+  return BUCKET_NAME;
 };
 
 export const parseIcon = async (icon?: MulterFile): Promise<string | null> => {
@@ -37,7 +37,7 @@ export const parseIcon = async (icon?: MulterFile): Promise<string | null> => {
 
   await s3.send(uploadCommand);
 
-  return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+  return `https://${getBucketName()}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 };
 
 const updateUserProfile = async (
