@@ -59,7 +59,14 @@ const handleRedirectGoogle = async (req: Request, res: Response) => {
   res.redirect(redirectUrl.toString());
 };
 
+const preparingForgotPassword = async (req: Request, res: Response) => {
+  const { identifier } = req.body;
+
+  // const findUser = await
+};
+
 export default {
+  preparingForgotPassword,
   handleRedirectGoogle,
   loginOrCreateGoogleAccount,
   login,

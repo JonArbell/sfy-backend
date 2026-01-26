@@ -47,7 +47,7 @@ router.post(
   authController.register,
 );
 
-router.post("/");
+router.post("/forgot-password", authController.preparingForgotPassword);
 
 router.post("/refresh", authController.refreshToken);
 
