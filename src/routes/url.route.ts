@@ -26,7 +26,11 @@ authenticated.get("/:id", urlController.getUrlById);
 
 authenticated.delete("/:id", urlController.deleteUrlById);
 
-authenticated.put("/:id", urlController.updateUrlById);
+authenticated.put(
+  "/:id",
+  validateBody(shortenUrlValidator),
+  urlController.updateUrlById,
+);
 
 router.use("/api/urls", authenticated);
 
