@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Application } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./prisma/generated/prisma/client";
+import { cronJobsService } from "./services/cron-jobs-service";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 
@@ -12,5 +13,7 @@ const app: Application = express();
 
 app.use(express.json());
 app.set("trust proxy", true);
+
+cronJobsService();
 
 export { prisma, app };
