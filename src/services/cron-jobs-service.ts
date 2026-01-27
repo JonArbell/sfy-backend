@@ -4,7 +4,9 @@ const jobs = async () => {
   const base = process.env.BASE_PROD_URL;
 
   try {
-    await axios.get(`${base}`);
+    const response = await axios.get(`${base}`);
+
+    console.log(response);
   } catch (e) {
     console.log(e);
   }
